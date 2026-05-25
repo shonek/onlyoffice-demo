@@ -1,0 +1,355 @@
+<!doctype html>
+<html style="height: 100%">
+  <head>
+      
+    <title>ONLYOFFICE Api Documentation</title>
+  </head>
+  <body style="height: 100%; margin: 0">
+      
+    <div id="placeholder" style="height: 100%"></div>
+      
+    <script
+      type="text/javascript"
+      src="http://172.22.8.36:8080/web-apps/apps/api/documents/api.js"
+    ></script>
+      
+    <script type="text/javascript">
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get("id");
+      const permission = urlParams.get("permission");
+      const username = urlParams.get("username");
+      const lang = urlParams.get("lang");
+      const origin = "http://10.42.146.21:3001";
+
+      fetch(`/files/${id}`, {
+        method: "GET",
+      })
+        .then((response) => response.json())
+        .then((res) => {
+          const data = res.data;
+          window.docEditor = new DocsAPI.DocEditor("placeholder", {
+            document: {
+              fileType: data.path.split(".").pop(),
+              key: data.fileKey,
+              title: data.fileName,
+              url: origin + "/files/download/" + data.id,
+              permissions: {
+                comment: permission === "comment" || permission === "edit",
+                edit: permission === "edit",
+                download: permission === "edit",
+              },
+            },
+            documentType: "word",
+            editorConfig: {
+              callbackUrl: origin + "/onlyoffice/callback",
+              user: {
+                name: username,
+                roles: null,
+              },
+              mode: permission === "view" ? "view" : "edit",
+              lang: lang,
+              customization: {
+                forcesave: true, // 开启后，点击保存按钮会立即触发 status=6 的回调
+              },
+            },
+            width: "100%",
+            height: "100%",
+            events: {
+              onRequestUsers(event) {
+                if (event && event.data) {
+                  var c = event.data.c;
+                }
+
+                switch (c) {
+                  case "protect":
+                    var users = [
+                      {
+                        id: "uid-2",
+                        name: "Mark Pottato",
+                        email: "pottato@example.com",
+                        group: "group-2",
+                        reviewGroups: ["group-2", ""],
+                        commentGroups: {
+                          view: "",
+                          edit: ["group-2", ""],
+                          remove: ["group-2"],
+                        },
+                        userInfoGroups: ["group-2", ""],
+                        favorite: true,
+                        deniedPermissions: [],
+                        descriptions: [
+                          "Belongs to Group2",
+                          "Can review only his own changes or changes made by users with no group",
+                          "Can view comments, edit his own comments and comments left by users with no group. Can remove his own comments only",
+                          "Can see the information about users from Group2 and users who don't belong to any group",
+                          "This file is marked as favorite",
+                          "Can create new files from the editor",
+                          "Has an avatar",
+                          "Can start filling",
+                          'Has role "Anyone"',
+                          "Can submit forms",
+                        ],
+                        templates: false,
+                        avatar: true,
+                        goback: { text: "Go to Documents" },
+                        close: {},
+                        canSubmitForm: true,
+                        roles: ["Anyone"],
+                        image:
+                          "http://172.22.8.36:8080/example/images/uid-2.png",
+                      },
+                      {
+                        id: "uid-3",
+                        name: "Hamish Mitchell",
+                        email: "mitchell@example.com",
+                        group: "group-3",
+                        reviewGroups: ["group-2"],
+                        commentGroups: {
+                          view: ["group-3", "group-2"],
+                          edit: ["group-2"],
+                          remove: [],
+                        },
+                        userInfoGroups: ["group-2"],
+                        favorite: null,
+                        deniedPermissions: ["copy", "download", "print"],
+                        descriptions: [
+                          "Belongs to Group3",
+                          "Can review changes made by Group2 users",
+                          "Can view comments left by Group2 and Group3 users. Can edit comments left by the Group2 users",
+                          "Can see the information about Group2 users",
+                          "The file favorite state is undefined",
+                          "Can't copy data from the file to clipboard",
+                          "Can't download the file",
+                          "Can't print the file",
+                          "Can create new files from the editor",
+                          "Can't close history",
+                          "Can't restore the file version",
+                          "Can start filling",
+                          'Has role "role"',
+                          "Can't submit forms",
+                        ],
+                        templates: false,
+                        avatar: false,
+                        goback: null,
+                        close: {},
+                        canSubmitForm: false,
+                        roles: ["role"],
+                        image: null,
+                      },
+                    ];
+                    break;
+                  case "info":
+                    users = [];
+                    var allUsers = [
+                      {
+                        id: "uid-1",
+                        name: "John Smith",
+                        email: "smith@example.com",
+                        group: null,
+                        reviewGroups: null,
+                        commentGroups: {},
+                        userInfoGroups: null,
+                        favorite: false,
+                        deniedPermissions: [],
+                        descriptions: [
+                          "File author by default",
+                          "Doesn't belong to any group",
+                          "Can review all the changes",
+                          "Can perform all actions with comments",
+                          "Can see the information about all users",
+                          "This file isn't marked as favorite",
+                          "Can create files from templates using data from the editor",
+                          "Has an avatar",
+                          "Can start filling",
+                          "Has no roles",
+                          "Can submit forms",
+                        ],
+                        templates: true,
+                        avatar: true,
+                        goback: {
+                          blank: false,
+                          url: "http://172.22.8.36:8080/example/",
+                        },
+                        close: { visible: false },
+                        canSubmitForm: true,
+                        roles: null,
+                        image:
+                          "http://172.22.8.36:8080/example/images/uid-1.png",
+                      },
+                      {
+                        id: "uid-2",
+                        name: "Mark Pottato",
+                        email: "pottato@example.com",
+                        group: "group-2",
+                        reviewGroups: ["group-2", ""],
+                        commentGroups: {
+                          view: "",
+                          edit: ["group-2", ""],
+                          remove: ["group-2"],
+                        },
+                        userInfoGroups: ["group-2", ""],
+                        favorite: true,
+                        deniedPermissions: [],
+                        descriptions: [
+                          "Belongs to Group2",
+                          "Can review only his own changes or changes made by users with no group",
+                          "Can view comments, edit his own comments and comments left by users with no group. Can remove his own comments only",
+                          "Can see the information about users from Group2 and users who don't belong to any group",
+                          "This file is marked as favorite",
+                          "Can create new files from the editor",
+                          "Has an avatar",
+                          "Can start filling",
+                          'Has role "Anyone"',
+                          "Can submit forms",
+                        ],
+                        templates: false,
+                        avatar: true,
+                        goback: { text: "Go to Documents" },
+                        close: {},
+                        canSubmitForm: true,
+                        roles: ["Anyone"],
+                        image:
+                          "http://172.22.8.36:8080/example/images/uid-2.png",
+                      },
+                      {
+                        id: "uid-3",
+                        name: "Hamish Mitchell",
+                        email: "mitchell@example.com",
+                        group: "group-3",
+                        reviewGroups: ["group-2"],
+                        commentGroups: {
+                          view: ["group-3", "group-2"],
+                          edit: ["group-2"],
+                          remove: [],
+                        },
+                        userInfoGroups: ["group-2"],
+                        favorite: null,
+                        deniedPermissions: ["copy", "download", "print"],
+                        descriptions: [
+                          "Belongs to Group3",
+                          "Can review changes made by Group2 users",
+                          "Can view comments left by Group2 and Group3 users. Can edit comments left by the Group2 users",
+                          "Can see the information about Group2 users",
+                          "The file favorite state is undefined",
+                          "Can't copy data from the file to clipboard",
+                          "Can't download the file",
+                          "Can't print the file",
+                          "Can create new files from the editor",
+                          "Can't close history",
+                          "Can't restore the file version",
+                          "Can start filling",
+                          'Has role "role"',
+                          "Can't submit forms",
+                        ],
+                        templates: false,
+                        avatar: false,
+                        goback: null,
+                        close: {},
+                        canSubmitForm: false,
+                        roles: ["role"],
+                        image: null,
+                      },
+                      {
+                        id: "uid-0",
+                        name: null,
+                        email: null,
+                        group: null,
+                        reviewGroups: null,
+                        commentGroups: {},
+                        userInfoGroups: [],
+                        favorite: null,
+                        deniedPermissions: ["protect"],
+                        descriptions: [
+                          "The name is requested when the editor is opened",
+                          "Doesn't belong to any group",
+                          "Can review all the changes",
+                          "Can perform all actions with comments",
+                          "Can't see anyone's information",
+                          "The file favorite state is undefined",
+                          "Can't mention others in comments",
+                          "Can't create new files from the editor",
+                          "Can't rename files from the editor",
+                          "Can't view chat",
+                          "Can't protect file",
+                          "View file without collaboration",
+                          "Can't refresh outdated file",
+                          "Can't start filling",
+                          "Has empty role",
+                          "Can't submit forms",
+                          "Tour of tips when opening a document",
+                          "Without AI Auto Fill Plugin",
+                        ],
+                        templates: false,
+                        avatar: false,
+                        goback: null,
+                        close: null,
+                        canSubmitForm: false,
+                        roles: [],
+                        image: null,
+                      },
+                    ];
+                    for (var i = 0; i < event.data.id.length; i++) {
+                      for (var j = 0; j < allUsers.length; j++) {
+                        if (allUsers[j].id == event.data.id[i]) {
+                          users.push(allUsers[j]);
+                          break;
+                        }
+                      }
+                    }
+                    break;
+                  default:
+                    users = [
+                      { email: "pottato@example.com", name: "Mark Pottato" },
+                      {
+                        email: "mitchell@example.com",
+                        name: "Hamish Mitchell",
+                      },
+                    ];
+                }
+
+                if (
+                  (c === "protect" || c === "mention") &&
+                  users &&
+                  event.data.count
+                ) {
+                  let from = event.data.from;
+                  let count = event.data.count;
+                  let search = event.data.search;
+                  if (from != 0) users = [];
+                  var resultCount = 234;
+                  for (
+                    var i = Math.max(users.length, from);
+                    i < Math.min(from + count, resultCount);
+                    i++
+                  ) {
+                    users.push({
+                      email: "test@test.test" + (i + 1),
+                      id: "id" + (i + 1),
+                      name: "test_" + search + (i + 1),
+                    });
+                  }
+                }
+
+                var result = {
+                  c: c,
+                  users: users,
+                };
+                if (resultCount) {
+                  // support v9.0
+                  result.total =
+                    1 +
+                    (!event.data.count || users.length < event.data.count
+                      ? 0
+                      : event.data.from + event.data.count);
+                  // since v9.0.1
+                  result.isPaginated = true;
+                }
+
+                docEditor.setUsers(result);
+              },
+            },
+          });
+        });
+    </script>
+  </body>
+</html>

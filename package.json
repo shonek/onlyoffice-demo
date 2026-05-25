@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue-jsx": "^5.0.1",
+    "cors": "^2.8.6",
+    "crypto-js": "^4.2.0",
+    "express": "^5.2.1",
+    "multer": "^2.1.1",
+    "sql.js": "^1.14.1"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.0"
+  }
+}
