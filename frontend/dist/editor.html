@@ -43,6 +43,7 @@
             editorConfig: {
               callbackUrl: origin + "/onlyoffice/callback",
               user: {
+                id: "",
                 name: username,
                 roles: null,
               },
@@ -346,6 +347,31 @@
                 }
 
                 docEditor.setUsers(result);
+              },
+              onRequestHistory() {
+                docEditor.refreshHistory({
+                  currentVersion: 2,
+                  history: [
+                    {
+                      created: "2010-07-06 10:13 AM",
+                      key: "af86C7e71Ca8",
+                      user: {
+                        id: "F89d8069ba2b",
+                        name: "Kate Cage",
+                      },
+                      version: 1,
+                    },
+                    {
+                      created: "2010-07-07 3:46 PM",
+                      key: "Khirz6zTPdfd7",
+                      user: {
+                        id: "78e1e841",
+                        name: "John Smith",
+                      },
+                      version: 2,
+                    },
+                  ],
+                });
               },
             },
           });

@@ -2,8 +2,26 @@ const initSqlJs = require("sql.js");
 const fs = require("fs");
 const path = require("path");
 
-const DB_PATH = path.join(__dirname, "data.db");
+const DB_PATH = path.join(__dirname, "./data/data.db");
 let db = null;
+
+// 运行时计算服务器时区偏移，生成 ISO 8601 格式的时间字符串
+function getTimezoneOffset() {
+  const offset = new Date().getTimezoneOffset(); // 分钟，UTC-本地，东八区为 -480
+  const totalMinutes = -offset;
+  const hours = Math.floor(Math.abs(totalMinutes) / 60);
+  const minutes = Math.abs(totalMinutes) % 60;
+  const sign = totalMinutes >= 0 ? "+" : "-";
+  return {
+    sign,
+    hours,
+    minutes,
+    offsetStr: `${sign}${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`,
+    adjustHours: totalMinutes / 60, // 用于 SQLite 的 '+N hours' 偏移
+  };
+}
+
+const tz = getTimezoneOffset();
 
 async function getDb() {
   if (db) return db;
@@ -25,8 +43,8 @@ async function getDb() {
       fileKey TEXT NOT NULL,
       originFileKey TEXT NOT NULL,
       path TEXT NOT NULL,
-      createTime DATETIME DEFAULT (datetime('now', 'localtime')),
-      updateTime DATETIME DEFAULT (datetime('now', 'localtime'))
+      createTime DATETIME DEFAULT (strftime('%Y-%m-%dT%H:%M:%S${tz.offsetStr}', 'now', '${tz.adjustHours} hours')),
+      updateTime DATETIME DEFAULT (strftime('%Y-%m-%dT%H:%M:%S${tz.offsetStr}', 'now', '${tz.adjustHours} hours'))
     )
   `);
 
@@ -35,7 +53,7 @@ async function getDb() {
     AFTER UPDATE ON files
     FOR EACH ROW
     BEGIN
-      UPDATE files SET updateTime = datetime('now', 'localtime') WHERE id = OLD.id;
+      UPDATE files SET updateTime = strftime('%Y-%m-%dT%H:%M:%S${tz.offsetStr}', 'now', '${tz.adjustHours} hours') WHERE id = OLD.id;
     END
   `);
 
