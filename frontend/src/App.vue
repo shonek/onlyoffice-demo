@@ -206,11 +206,11 @@ function handleEdit(row) {
 
 function handleEditConfirm() {
   editFormRef.value.validate().then(() => {
+    editDialogVisible.value = false;
     const { id, username, permission, lang } = editForm.value;
     window.open(
       `/editor.html?id=${encodeURIComponent(id)}&username=${encodeURIComponent(username)}&permission=${encodeURIComponent(permission)}&lang=${encodeURIComponent(lang)}`,
     );
-    editDialogVisible.value = false;
   });
 }
 

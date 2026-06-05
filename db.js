@@ -2,7 +2,11 @@ const initSqlJs = require("sql.js");
 const fs = require("fs");
 const path = require("path");
 
-const DB_PATH = path.join(__dirname, "./data/data.db");
+const DB_DIR = path.join(__dirname, "data");
+const DB_PATH = path.join(DB_DIR, "data.db");
+if (!fs.existsSync(DB_DIR)) {
+  fs.mkdirSync(DB_DIR, { recursive: true });
+}
 let db = null;
 
 // 运行时计算服务器时区偏移，生成 ISO 8601 格式的时间字符串

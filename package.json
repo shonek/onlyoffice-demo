@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "node index.js",
-    "pm2:start": "pm2 start index.js --name abc",
+    "pm2:start": "pm2-runtime start index.js --name abc",
     "pm2:stop": "pm2 stop abc",
     "pm2:restart": "pm2 restart abc",
     "pm2:delete": "pm2 delete abc",
@@ -15,10 +15,10 @@
     "express": "^5.2.1",
     "morgan": "^1.11.0",
     "multer": "^2.1.1",
+    "pm2": "^7.0.1",
     "sql.js": "^1.14.1"
   },
   "devDependencies": {
-    "patch-package": "^8.0.0",
-    "pm2": "^7.0.1"
+    "patch-package": "^8.0.0"
   }
 }
