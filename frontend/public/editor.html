@@ -15,6 +15,8 @@
       const permission = urlParams.get("permission");
       const username = urlParams.get("username");
       const lang = urlParams.get("lang");
+      const canEditComment = urlParams.get("canEditComment") === "1";
+      const canDeleteComment = urlParams.get("canDeleteComment") === "1";
       // const origin = "http://172.22.8.36:3001";
       const origin = "http://10.42.146.21:3001";
 
@@ -34,15 +36,31 @@
                 comment: permission === "comment" || permission === "edit",
                 edit: permission === "edit",
                 download: permission === "edit",
+                review: permission === "edit",
+                commentGroups: {
+                  edit: canEditComment ? [""] : [],
+                  remove: canDeleteComment ? [""] : [],
+                },
               },
             },
             documentType: "word",
             editorConfig: {
               callbackUrl: origin + "/onlyoffice/callback",
               user: {
-                id: "",
+                id: username,
                 name: username,
-                roles: null,
+                group: [
+                  canEditComment ? "EditCommentGroup" : "",
+                  canDeleteComment ? "RemoveCommentGroup" : "",
+                ]
+                  .filter((v) => v)
+                  .join(","),
+
+                commentGroups: {
+                  view: [""],
+                  edit: ["EditCommentGroup", ""],
+                  remove: ["RemoveCommentGroup", ""],
+                },
               },
               mode: permission === "view" ? "view" : "edit",
               lang: lang,
@@ -369,6 +387,9 @@
                     },
                   ],
                 });
+              },
+              onRequestHistoryClose(event) {
+                document.location.reload();
               },
             },
             // 这种方式不支持，可能有什么限制或者配置，文档https://api.onlyoffice.com/docs/plugin-and-macros/tutorials/installing/onlyoffice-docs-on-premises/#adding-plugins-through-the-configjson-file

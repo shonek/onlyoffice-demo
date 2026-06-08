@@ -12,6 +12,7 @@
         查询
       </el-button>
       <el-upload
+        ref="upload"
         v-model:file-list="fileList"
         :limit="1"
         :on-exceed="handleExceed"
@@ -84,7 +85,7 @@
 
     <el-dialog v-model="editDialogVisible" title="编辑" width="400px">
       <el-form
-        label-width="80px"
+        label-width="100px"
         :model="editForm"
         ref="editFormRef"
         :rules="rules"
@@ -104,6 +105,18 @@
             <el-radio value="zh">中文</el-radio>
             <el-radio value="en">英文</el-radio>
             <el-radio value="ja">日文</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="可编辑评论" prop="canEditComment">
+          <el-radio-group v-model="editForm.canEditComment">
+            <el-radio value="1">是</el-radio>
+            <el-radio value="0">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="可删除评论" prop="canDeleteComment">
+          <el-radio-group v-model="editForm.canDeleteComment">
+            <el-radio value="1">是</el-radio>
+            <el-radio value="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -145,6 +158,7 @@ const rules = ref({
 const editFormRef = ref(null);
 
 const handleExceed = (files) => {
+  console.log(files);
   upload.value.clearFiles();
   const file = files[0];
   file.uid = genFileId();
@@ -190,6 +204,7 @@ function handleUpload(option) {
   const formData = new FormData();
   formData.append("file", option.file);
   uploadFile(formData).then(() => {
+    upload.value.clearFiles();
     fetchData();
   });
 }
@@ -200,6 +215,8 @@ function handleEdit(row) {
     username: "",
     permission: "edit",
     lang: "zh",
+    canEditComment: "1",
+    canDeleteComment: "1",
   };
   editDialogVisible.value = true;
 }
@@ -207,10 +224,13 @@ function handleEdit(row) {
 function handleEditConfirm() {
   editFormRef.value.validate().then(() => {
     editDialogVisible.value = false;
-    const { id, username, permission, lang } = editForm.value;
-    window.open(
-      `/editor.html?id=${encodeURIComponent(id)}&username=${encodeURIComponent(username)}&permission=${encodeURIComponent(permission)}&lang=${encodeURIComponent(lang)}`,
-    );
+    const { id, username, permission, lang, canEditComment, canDeleteComment } =
+      editForm.value;
+    const params = [];
+    Object.keys(editForm.value).forEach((key) => {
+      params.push(`${key}=${encodeURIComponent(editForm.value[key])}`);
+    });
+    window.open(`/editor.html?${params.join("&")}`);
   });
 }
 
