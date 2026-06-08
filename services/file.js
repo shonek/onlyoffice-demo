@@ -125,6 +125,8 @@ app.get("/files/download/:id", async (req, res) => {
       return res.status(404).json({ error: "文件不存在" });
     }
 
+    await forceSave(record.fileKey);
+
     res.download(record.path, record.fileName, {
       headers: {
         "Content-Type": "application/octet-stream",

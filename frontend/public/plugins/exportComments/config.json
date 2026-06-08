@@ -1,0 +1,21 @@
+{
+  "name": "Comments",
+  "guid": "asc.{0616AE85-5DBE-4B6B-A0A9-455C4F1503AD}",
+  "baseUrl": "",
+  "variations": [
+    {
+      "description": "Export Comments",
+      "url": "index.html",
+      "icons": ["resources/img/icon.png"],
+      "isViewer": false,
+      "EditorsSupport": ["word"],
+      "isVisual": false,
+      "isModal": true,
+      "isInsideMode": false,
+      "initDataType": "none",
+      "initData": "",
+      "isUpdateOleOnResize": true,
+      "buttons": []
+    }
+  ]
+}

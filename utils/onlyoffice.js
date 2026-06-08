@@ -25,7 +25,7 @@ async function forceSave(fileKey) {
         },
       },
       (res) => {
-        const data = "";
+        let data = "";
         res.on("data", (chunk) => {
           data += chunk.toString();
         });
