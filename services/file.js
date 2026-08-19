@@ -15,7 +15,7 @@ const {
   FILES_DIR,
 } = require("../utils/file");
 const { app } = require("../http");
-const { forceSave } = require("../utils/onlyoffice");
+const { forceSave, getCommentsFromFile } = require("../utils/onlyoffice");
 
 app.post("/files/upload", upload.single("file"), async (req, res) => {
   try {
@@ -230,5 +230,34 @@ app.delete("/files/:id", async (req, res) => {
   } catch (err) {
     console.error("删除失败:", err);
     res.status(500).json({ error: "删除失败", detail: err.message });
+  }
+});
+
+app.get("/files/:id/comments", async (req, res) => {
+  try {
+    await getDb();
+
+    const id = parseInt(req.params.id);
+    if (!id) {
+      return res.status(400).json({ error: "缺少 id 参数" });
+    }
+
+    const record = findById(id);
+    if (!record) {
+      return res.status(404).json({ error: "文件记录不存在" });
+    }
+
+    const filePath = record.path;
+
+    const comments = getCommentsFromFile(filePath);
+
+    res.json({
+      code: 0,
+      data: comments,
+      message: "获取批注成功",
+    });
+  } catch (err) {
+    console.error("获取批注失败:", err);
+    res.status(500).json({ error: "获取批注失败", detail: err.message });
   }
 });
