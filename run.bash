@@ -1,5 +1,9 @@
+# 镜像版本，默认使用 latest
+IMAGE_VERSION="${1:-latest}"
+IMAGE_NAME="file-manager:${IMAGE_VERSION}"
+
 # 构建镜像
-docker build -t file-manager .
+docker build -t "$IMAGE_NAME" .
 
 mkdir -p $(pwd)/data
 mkdir -p $(pwd)/files
@@ -12,4 +16,4 @@ docker run -d \
   -v $(pwd)/files:/app/files \
   -v $(pwd)/logs:/app/logs \
   --name file-manager \
-  file-manager
+  "$IMAGE_NAME"
