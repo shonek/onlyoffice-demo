@@ -1,4 +1,4 @@
-const ONLYOFFICE_URL = "http://172.22.8.36:8080";
+const ONLYOFFICE_URL = "http://172.22.8.199:8080";
 
 const FORCE_SAVE_ERROR = {
   0: "No errors.",

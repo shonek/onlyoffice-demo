@@ -7,7 +7,7 @@
     <div id="placeholder" style="width: 100%; height: 100%"></div>
     <script
       type="text/javascript"
-      src="http://172.22.8.36:8080/web-apps/apps/api/documents/api.js"
+      src="http://172.22.8.199:8080/web-apps/apps/api/documents/api.js"
     ></script>
     <script type="text/javascript">
       const urlParams = new URLSearchParams(window.location.search);
@@ -17,7 +17,7 @@
       const lang = urlParams.get("lang");
       const canEditComment = urlParams.get("canEditComment") === "1";
       const canDeleteComment = urlParams.get("canDeleteComment") === "1";
-      const origin = "http://172.22.8.36:3001";
+      const origin = "http://172.22.8.199:3001";
       // const origin = "http://10.42.146.21:3001";
 
       fetch(`/files/${id}`, {
@@ -112,7 +112,7 @@
                         canSubmitForm: true,
                         roles: ["Anyone"],
                         image:
-                          "http://172.22.8.36:8080/example/images/uid-2.png",
+                          "http://172.22.8.199:8080/example/images/uid-2.png",
                       },
                       {
                         id: "uid-3",
@@ -184,13 +184,13 @@
                         avatar: true,
                         goback: {
                           blank: false,
-                          url: "http://172.22.8.36:8080/example/",
+                          url: "http://172.22.8.199:8080/example/",
                         },
                         close: { visible: false },
                         canSubmitForm: true,
                         roles: null,
                         image:
-                          "http://172.22.8.36:8080/example/images/uid-1.png",
+                          "http://172.22.8.199:8080/example/images/uid-1.png",
                       },
                       {
                         id: "uid-2",
@@ -225,7 +225,7 @@
                         canSubmitForm: true,
                         roles: ["Anyone"],
                         image:
-                          "http://172.22.8.36:8080/example/images/uid-2.png",
+                          "http://172.22.8.199:8080/example/images/uid-2.png",
                       },
                       {
                         id: "uid-3",
