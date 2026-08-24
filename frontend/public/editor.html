@@ -24,7 +24,7 @@
         method: "GET",
       })
         .then((response) => response.json())
-        .then((res) => {
+        .then(async (res) => {
           const data = res.data;
           const config = {
             document: {
@@ -426,6 +426,29 @@
           //   window.attachEvent("onresize", fixSize);
           //   window.attachEvent("orientationchange", fixSize);
           // }
+
+          // events 是客户端回调函数，不参与签名，先剥离再发给后端
+          const { events, ...signable } = config;
+          const tokenResp = await fetch(origin + "/onlyoffice/token", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(signable),
+          });
+          if (tokenResp.ok) {
+            const tokens = await tokenResp.json();
+            if (tokens.token) {
+              config.token = tokens.token;
+              if (config.document) config.document.token = tokens.documentToken;
+              if (config.editorConfig) config.editorConfig.token = tokens.editorConfigToken;
+            }
+          } else if (tokenResp.status === 503) {
+            // ONLY_OFFICE_KEY 未配置：若 Document Server 关闭了 JWT，编辑器仍可正常加载
+            console.warn("OnlyOffice 鉴权密钥未配置（ONLY_OFFICE_KEY），跳过 token 签发");
+            alert("提示：服务器未配置 ONLY_OFFICE_KEY，鉴权已跳过。若 Document Server 开启了 JWT，编辑器将无法加载。");
+          } else {
+            console.error("OnlyOffice token 签发失败：", tokenResp.status);
+            alert("OnlyOffice 鉴权服务异常（" + tokenResp.status + "）");
+          }
 
           connectEditor();
         });

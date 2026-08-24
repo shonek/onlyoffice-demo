@@ -1,4 +1,6 @@
 const ONLYOFFICE_URL = "http://172.22.8.199:8080";
+const { sign } = require("./jwt");
+const { ONLY_OFFICE_SECRET } = require("./config");
 
 const FORCE_SAVE_ERROR = {
   0: "No errors.",
@@ -14,7 +16,12 @@ async function forceSave(fileKey) {
   const Buffer = require("buffer").Buffer;
 
   return new Promise((resolve, reject) => {
-    const postData = JSON.stringify({ c: "forcesave", key: fileKey });
+    const payload = { c: "forcesave", key: fileKey };
+    // 开启 JWT 后，命令载荷需带 token，否则被 Document Server 以错误码 6 拒绝
+    if (ONLY_OFFICE_SECRET) {
+      payload.token = sign(payload, ONLY_OFFICE_SECRET);
+    }
+    const postData = JSON.stringify(payload);
     const req = http.request(
       ONLYOFFICE_URL + "/command",
       {
